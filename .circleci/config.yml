@@ -12,8 +12,6 @@ workflows:
           app_catalog: "control-plane-catalog"
           app_catalog_test: "control-plane-test-catalog"
           chart: "argo-events"
-          requires:
-            - push-argo-events-to-quay
           # Needed to trigger job also on git tag.
           filters:
             tags:
