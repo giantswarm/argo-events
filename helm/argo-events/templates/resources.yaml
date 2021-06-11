@@ -1,125 +1,5 @@
 # This is an auto-generated file. DO NOT EDIT
 # VERSION=v1.3.1
-apiVersion: apiextensions.k8s.io/v1
-kind: CustomResourceDefinition
-metadata:
-  name: eventbus.argoproj.io
-spec:
-  group: argoproj.io
-  names:
-    kind: EventBus
-    listKind: EventBusList
-    plural: eventbus
-    shortNames:
-    - eb
-    singular: eventbus
-  scope: Namespaced
-  versions:
-  - name: v1alpha1
-    schema:
-      openAPIV3Schema:
-        properties:
-          apiVersion:
-            type: string
-          kind:
-            type: string
-          metadata:
-            type: object
-          spec:
-            type: object
-            x-kubernetes-preserve-unknown-fields: true
-          status:
-            type: object
-            x-kubernetes-preserve-unknown-fields: true
-        required:
-        - metadata
-        - spec
-        type: object
-    served: true
-    storage: true
-    subresources:
-      status: {}
----
-apiVersion: apiextensions.k8s.io/v1
-kind: CustomResourceDefinition
-metadata:
-  name: eventsources.argoproj.io
-spec:
-  group: argoproj.io
-  names:
-    kind: EventSource
-    listKind: EventSourceList
-    plural: eventsources
-    shortNames:
-    - es
-    singular: eventsource
-  scope: Namespaced
-  versions:
-  - name: v1alpha1
-    schema:
-      openAPIV3Schema:
-        properties:
-          apiVersion:
-            type: string
-          kind:
-            type: string
-          metadata:
-            type: object
-          spec:
-            type: object
-            x-kubernetes-preserve-unknown-fields: true
-          status:
-            type: object
-            x-kubernetes-preserve-unknown-fields: true
-        required:
-        - metadata
-        - spec
-        type: object
-    served: true
-    storage: true
-    subresources:
-      status: {}
----
-apiVersion: apiextensions.k8s.io/v1
-kind: CustomResourceDefinition
-metadata:
-  name: sensors.argoproj.io
-spec:
-  group: argoproj.io
-  names:
-    kind: Sensor
-    listKind: SensorList
-    plural: sensors
-    shortNames:
-    - sn
-    singular: sensor
-  scope: Namespaced
-  versions:
-  - name: v1alpha1
-    schema:
-      openAPIV3Schema:
-        properties:
-          apiVersion:
-            type: string
-          kind:
-            type: string
-          metadata:
-            type: object
-          spec:
-            type: object
-            x-kubernetes-preserve-unknown-fields: true
-          status:
-            type: object
-            x-kubernetes-preserve-unknown-fields: true
-        required:
-        - metadata
-        - spec
-        type: object
-    served: true
-    storage: true
-    subresources:
-      status: {}
----
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -132,57 +12,57 @@ metadata:
   name: argo-events-role
   namespace: argocd
 rules:
-- apiGroups:
-  - argoproj.io
-  resources:
-  - sensors
-  - sensors/finalizers
-  - sensors/status
-  - eventsources
-  - eventsources/finalizers
-  - eventsources/status
-  - eventbus
-  - eventbus/finalizers
-  - eventbus/status
-  verbs:
-  - create
-  - delete
-  - deletecollection
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - ""
-  resources:
-  - pods
-  - pods/exec
-  - configmaps
-  - secrets
-  - services
-  - persistentvolumeclaims
-  verbs:
-  - create
-  - get
-  - list
-  - watch
-  - update
-  - patch
-  - delete
-- apiGroups:
-  - apps
-  resources:
-  - deployments
-  - statefulsets
-  verbs:
-  - create
-  - get
-  - list
-  - watch
-  - update
-  - patch
-  - delete
+  - apiGroups:
+      - argoproj.io
+    resources:
+      - sensors
+      - sensors/finalizers
+      - sensors/status
+      - eventsources
+      - eventsources/finalizers
+      - eventsources/status
+      - eventbus
+      - eventbus/finalizers
+      - eventbus/status
+    verbs:
+      - create
+      - delete
+      - deletecollection
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - ''
+    resources:
+      - pods
+      - pods/exec
+      - configmaps
+      - secrets
+      - services
+      - persistentvolumeclaims
+    verbs:
+      - create
+      - get
+      - list
+      - watch
+      - update
+      - patch
+      - delete
+  - apiGroups:
+      - apps
+    resources:
+      - deployments
+      - statefulsets
+    verbs:
+      - create
+      - get
+      - list
+      - watch
+      - update
+      - patch
+      - delete
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -194,9 +74,9 @@ roleRef:
   kind: Role
   name: argo-events-role
 subjects:
-- kind: ServiceAccount
-  name: argo-events-sa
-  namespace: argocd
+  - kind: ServiceAccount
+    name: argo-events-sa
+    namespace: argocd
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -214,32 +94,32 @@ spec:
         app: eventbus-controller
     spec:
       containers:
-      - args:
-        - --namespaced
-        env:
-        - name: NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
-        - name: NATS_STREAMING_IMAGE
-          value: nats-streaming:0.17.0
-        - name: NATS_METRICS_EXPORTER_IMAGE
-          value: synadia/prometheus-nats-exporter:0.6.2
-        image: argoproj/eventbus-controller:v1.3.1
-        imagePullPolicy: Always
-        livenessProbe:
-          httpGet:
-            path: /healthz
-            port: 8081
-          initialDelaySeconds: 3
-          periodSeconds: 3
-        name: eventbus-controller
-        readinessProbe:
-          httpGet:
-            path: /readyz
-            port: 8081
-          initialDelaySeconds: 3
-          periodSeconds: 3
+        - args:
+            - --namespaced
+          env:
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: NATS_STREAMING_IMAGE
+              value: nats-streaming:0.17.0
+            - name: NATS_METRICS_EXPORTER_IMAGE
+              value: synadia/prometheus-nats-exporter:0.6.2
+          image: argoproj/eventbus-controller:v1.3.1
+          imagePullPolicy: Always
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8081
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          name: eventbus-controller
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 8081
+            initialDelaySeconds: 3
+            periodSeconds: 3
       securityContext:
         runAsNonRoot: true
         runAsUser: 9731
@@ -261,30 +141,30 @@ spec:
         app: eventsource-controller
     spec:
       containers:
-      - args:
-        - --namespaced
-        env:
-        - name: EVENTSOURCE_IMAGE
-          value: argoproj/eventsource:v1.3.1
-        - name: NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
-        image: argoproj/eventsource-controller:v1.3.1
-        imagePullPolicy: Always
-        livenessProbe:
-          httpGet:
-            path: /healthz
-            port: 8081
-          initialDelaySeconds: 3
-          periodSeconds: 3
-        name: eventsource-controller
-        readinessProbe:
-          httpGet:
-            path: /readyz
-            port: 8081
-          initialDelaySeconds: 3
-          periodSeconds: 3
+        - args:
+            - --namespaced
+          env:
+            - name: EVENTSOURCE_IMAGE
+              value: argoproj/eventsource:v1.3.1
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          image: argoproj/eventsource-controller:v1.3.1
+          imagePullPolicy: Always
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8081
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          name: eventsource-controller
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 8081
+            initialDelaySeconds: 3
+            periodSeconds: 3
       securityContext:
         runAsNonRoot: true
         runAsUser: 9731
@@ -306,29 +186,29 @@ spec:
         app: sensor-controller
     spec:
       containers:
-      - args:
-        - --namespaced
-        env:
-        - name: SENSOR_IMAGE
-          value: argoproj/sensor:v1.3.1
-        - name: NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
-        image: argoproj/sensor-controller:v1.3.1
-        livenessProbe:
-          httpGet:
-            path: /healthz
-            port: 8081
-          initialDelaySeconds: 3
-          periodSeconds: 3
-        name: sensor-controller
-        readinessProbe:
-          httpGet:
-            path: /readyz
-            port: 8081
-          initialDelaySeconds: 3
-          periodSeconds: 3
+        - args:
+            - --namespaced
+          env:
+            - name: SENSOR_IMAGE
+              value: argoproj/sensor:v1.3.1
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          image: argoproj/sensor-controller:v1.3.1
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8081
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          name: sensor-controller
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 8081
+            initialDelaySeconds: 3
+            periodSeconds: 3
       securityContext:
         runAsNonRoot: true
         runAsUser: 9731
