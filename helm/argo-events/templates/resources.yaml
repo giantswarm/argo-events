@@ -1,4 +1,5 @@
 # This is an auto-generated file. DO NOT EDIT
+# VERSION=v1.3.1
 apiVersion: v1
 kind: Namespace
 metadata:
