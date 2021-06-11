@@ -1,0 +1,10 @@
+apiVersion: v1
+name: argo-events
+description: The Event-driven Workflow Automation Framework
+home: https://github.com/giantswarm/argo-events
+sources:
+  - https://github.com/argoproj/argo-events
+version: [[ .Version ]]
+appVersion: [[ .AppVersion ]]
+annotations:
+  application.giantswarm.io/team: "biscuit"

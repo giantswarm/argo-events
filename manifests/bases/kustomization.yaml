@@ -1,0 +1,3 @@
+resources:
+- https://raw.githubusercontent.com/argoproj/argo-events/stable/manifests/namespace-install.yaml
+- https://raw.githubusercontent.com/argoproj/argo-events/stable/examples/eventbus/native.yaml
